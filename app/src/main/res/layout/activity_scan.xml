@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/darker_gray"/>
+
+    <pres.mc.maxwell.library.ui.ScanLayout
+        android:id="@+id/sv_scan"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- 你可以在这里添加自己的扫描框，或者使用系统自带的 -->
+        <pres.mc.maxwell.library.ui.OverlayView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:bounds_height="200dp"
+            app:bounds_left="80dp"
+            app:bounds_top="170dp"
+            app:bounds_width="200dp"
+            app:corner_color="@android:color/white"
+            app:corner_length="30dp"
+            app:corner_stroke_width="4dp"
+            app:hint_color="@android:color/white"
+            app:hint_size="24sp"
+            app:hint_marginTop="40dp"
+            app:hint_text="正在扫描中..."
+            app:scan_line_color="@android:color/white"
+            app:scan_line_height="4dp"
+            app:scan_line_speed="10"/>
+
+    </pres.mc.maxwell.library.ui.ScanLayout>
+
+</LinearLayout>
