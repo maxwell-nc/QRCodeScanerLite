@@ -6,6 +6,7 @@
         <attr name="bounds_top" format="dimension"/>
         <attr name="bounds_width" format="dimension"/>
         <attr name="bounds_height" format="dimension"/>
+        <attr name="bounds_margin_top" format="dimension"/>
 
         <attr name="corner_stroke_width" format="dimension"/>
         <attr name="corner_length" format="dimension"/>
@@ -18,7 +19,7 @@
         <attr name="hint_color" format="color"/>
         <attr name="hint_text" format="string"/>
         <attr name="hint_size" format="dimension"/>
-        <attr name="hint_marginTop" format="dimension"/>
+        <attr name="hint_margin_top" format="dimension"/>
     </declare-styleable>
 
 </resources>

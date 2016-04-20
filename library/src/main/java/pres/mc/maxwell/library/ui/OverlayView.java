@@ -20,6 +20,7 @@ public class OverlayView extends View {
     private int boundsTop;
     private int boundsWidth;
     private int boundsHeight;
+    private int boundsMarginTop;
 
     private int cornerLength;
     private int cornerStrokeWidth;
@@ -37,6 +38,9 @@ public class OverlayView extends View {
     // 扫描线移动的y
     private int scanLineTop;
 
+    private int viewWidth;
+    private int viewHeight;
+
     private static final long ANIMATION_DELAY = 100L;
 
     public OverlayView(Context context) {
@@ -52,10 +56,11 @@ public class OverlayView extends View {
 
         TypedArray array = context.getTheme().obtainStyledAttributes(attrs, R.styleable.OverlayView, defStyleAttr, 0);
 
-        boundsLeft = (int) array.getDimension(R.styleable.OverlayView_bounds_left, 0);
-        boundsTop = (int) array.getDimension(R.styleable.OverlayView_bounds_top, 0);
-        boundsWidth = (int) array.getDimension(R.styleable.OverlayView_bounds_width, 0);
-        boundsHeight = (int) array.getDimension(R.styleable.OverlayView_bounds_height, 0);
+        boundsLeft = (int) array.getDimension(R.styleable.OverlayView_bounds_left, -1);
+        boundsTop = (int) array.getDimension(R.styleable.OverlayView_bounds_top, -1);
+        boundsWidth = (int) array.getDimension(R.styleable.OverlayView_bounds_width, -1);
+        boundsHeight = (int) array.getDimension(R.styleable.OverlayView_bounds_height, -1);
+        boundsMarginTop = (int) array.getDimension(R.styleable.OverlayView_bounds_margin_top, 0);
 
         cornerLength = (int) array.getDimension(R.styleable.OverlayView_corner_length, 0);
         cornerStrokeWidth = (int) array.getDimension(R.styleable.OverlayView_corner_stroke_width, 0);
@@ -68,15 +73,22 @@ public class OverlayView extends View {
         hintColor = array.getColor(R.styleable.OverlayView_hint_color, 0);
         hintSize = (int) array.getDimension(R.styleable.OverlayView_hint_size, 0);
         hintText = array.getString(R.styleable.OverlayView_hint_text);
-        hintMarginTop = (int) array.getDimension(R.styleable.OverlayView_hint_marginTop, 0);
+        hintMarginTop = (int) array.getDimension(R.styleable.OverlayView_hint_margin_top, 0);
 
     }
 
     public void onDraw(Canvas canvas) {
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        Rect frame = new Rect(boundsLeft, boundsTop, boundsLeft + boundsWidth, boundsTop + boundsHeight);
+        Rect frame;
+        if (boundsWidth < 0 || boundsHeight < 0) {//没设置时候居中显示
+            boundsLeft = viewWidth / 4;
+            boundsWidth = viewWidth / 2;
+            boundsTop = (viewHeight - boundsWidth) / 2;
+            boundsHeight = boundsWidth;
+        }
+        int top = boundsTop + boundsMarginTop;
+        frame = new Rect(boundsLeft, top, boundsLeft + boundsWidth, top + boundsHeight);
 
         drawFrameBounds(canvas, paint, frame);
         drawScanLight(canvas, paint, frame);
@@ -88,6 +100,12 @@ public class OverlayView extends View {
                 frame.right, frame.bottom);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        viewWidth = w;
+        viewHeight = h;
+    }
 
     /**
      * 绘制线框
@@ -113,7 +131,8 @@ public class OverlayView extends View {
                 frame.right + corWidth, frame.top, paint);
 
 
-        int bottom = (frame.right - frame.left) + frame.top;
+        //int bottom = (frame.right - frame.left) + frame.top;
+        int bottom = frame.bottom;
 
         // 左下角
         canvas.drawRect(frame.left - corWidth, bottom - corLength,

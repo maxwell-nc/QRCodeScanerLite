@@ -23,11 +23,11 @@ dependencies {
 }
 
 task makeJar(type: Copy) {
-    delete 'build/libs/ZxingScanLite-1.1.jar'
+    delete 'build/libs/ZxingScanLite-1.2.jar'
     from('build/intermediates/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', 'ZxingScanLite-1.1.jar')
+    rename ('classes.jar', 'ZxingScanLite-1.2.jar')
 }
 
 makeJar.dependsOn(build)

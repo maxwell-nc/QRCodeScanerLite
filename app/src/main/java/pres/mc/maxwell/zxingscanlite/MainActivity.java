@@ -28,14 +28,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-
-
-
                 ZXingScaner.configBuilder()
                         .setLayout(R.layout.activity_scan, R.id.sv_scan)
                         .scanArea(new Rect(0,230,720,950))
                         .buildScanAfterConfig(MainActivity.this)
                         .scan();
+
             }
         });
 

@@ -15,7 +15,7 @@ allprojects {
 2.Add the dependency
 ```
 dependencies {
-        compile 'com.github.maxwell-nc:ZXingScanLite:v1.1'
+        compile 'com.github.maxwell-nc:ZXingScanLite:v1.2'
 }
 ```
 ##Usage
@@ -44,33 +44,37 @@ ZXingScaner.scanBuilder(MainActivity.this).scan();
 ##Use your layout
 1.add in your layout
 ```
-    <pres.mc.maxwell.library.ui.ScanLayout
-        android:id="@+id/sv_scan"
+<pres.mc.maxwell.library.ui.ScanLayout
+    android:id="@+id/sv_scan"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+
+    <!-- below view is not necessary -->
+    <pres.mc.maxwell.library.ui.OverlayView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:bounds_height="200dp"
+        app:bounds_left="80dp"
+        app:bounds_margin_top="0dp"
+        app:bounds_top="120dp"
+        app:bounds_width="200dp"
+        app:corner_color="@android:color/white"
+        app:corner_length="30dp"
+        app:corner_stroke_width="4dp"
+        app:hint_color="@android:color/white"
+        app:hint_margin_top="40dp"
+        app:hint_size="24sp"
+        app:hint_text="正在扫描中..."
+        app:scan_line_color="@android:color/white"
+        app:scan_line_height="4dp"
+        app:scan_line_speed="10"/>
 
-        <!-- below view is not necessary -->
-        <pres.mc.maxwell.library.ui.OverlayView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:bounds_height="200dp"
-            app:bounds_left="80dp"
-            app:bounds_top="170dp"
-            app:bounds_width="200dp"
-            app:corner_color="@android:color/white"
-            app:corner_length="30dp"
-            app:corner_stroke_width="4dp"
-            app:hint_color="@android:color/white"
-            app:hint_size="24sp"
-            app:hint_marginTop="40dp"
-            app:hint_text="Scanning..."
-            app:scan_line_color="@android:color/white"
-            app:scan_line_height="4dp"
-            app:scan_line_speed="10"/>
-
-    </pres.mc.maxwell.library.ui.ScanLayout>
+</pres.mc.maxwell.library.ui.ScanLayout>
 ```
+
+if you do not set bounds,OverlayView will set in view group center and size was half of view width;
+
 2.config
 ```
 ZXingScaner.configBuilder()
