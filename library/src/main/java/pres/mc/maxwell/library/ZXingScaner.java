@@ -3,7 +3,8 @@ package pres.mc.maxwell.library;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.view.ViewGroup;
+
+import com.google.zxing.android.CaptureActivity.OnInflateListener;
 
 import pres.mc.maxwell.library.config.ScanConfig;
 
@@ -81,9 +82,14 @@ public class ZXingScaner {
         }
 
         //自定义布局
-        if (mConfigBuilder.layoutView !=null && mConfigBuilder.scanViewResId > 0) {
-            ScanConfig.scanLayout = mConfigBuilder.layoutView;
+        if (mConfigBuilder.layoutId > 0 && mConfigBuilder.scanViewResId > 0) {
+            ScanConfig.scanLayoutId = mConfigBuilder.layoutId;
             ScanConfig.scanViewId = mConfigBuilder.scanViewResId;
+        }
+
+        //布局监听
+        if (mConfigBuilder.inflateListener != null) {
+            ScanConfig.inflateListener = mConfigBuilder.inflateListener;
         }
 
         //错误的监听
@@ -124,10 +130,11 @@ public class ZXingScaner {
     public static class ConfigBuilder {
 
         long focusInterval;
-        ViewGroup layoutView;
+        int layoutId;
         int scanViewResId;
         Rect rect;
         onErrorListener errorListener;
+        OnInflateListener inflateListener;
 
         /**
          * 设置摄像头对焦间隔毫秒
@@ -140,9 +147,17 @@ public class ZXingScaner {
         /**
          * 自定义扫描布局
          */
-        public ConfigBuilder setLayout(ViewGroup layoutView, int scanViewResId) {
-            this.layoutView = layoutView;
+        public ConfigBuilder setLayout(int layoutId, int scanViewResId) {
+            this.layoutId = layoutId;
             this.scanViewResId = scanViewResId;
+            return this;
+        }
+
+        /**
+         * 监听布局填充
+         */
+        public ConfigBuilder inflateCallback(OnInflateListener inflateListener) {
+            this.inflateListener = inflateListener;
             return this;
         }
 

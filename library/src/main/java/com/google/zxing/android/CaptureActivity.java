@@ -50,10 +50,10 @@ public final class CaptureActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (ScanConfig.scanLayout == null) {
-            setContentView(ScanConfig.DEFAULT_SCAN_LAYOUT_RES);
-        } else {
-            setContentView(ScanConfig.scanLayout);
+        setContentView(ScanConfig.scanLayoutId);
+
+        if (ScanConfig.inflateListener != null) {
+            ScanConfig.inflateListener.onFinishInflate(this);
         }
 
         // 保持Activity处于唤醒状态
@@ -210,4 +210,12 @@ public final class CaptureActivity extends Activity implements
         }
 
     }
+
+    public interface OnInflateListener {
+        /**
+         * 填充布局完成时
+         */
+        void onFinishInflate(Activity captureActivity);
+    }
+
 }

@@ -15,7 +15,7 @@ allprojects {
 2.Add the dependency
 ```
 dependencies {
-        compile 'com.github.maxwell-nc:ZXingScanLite:v1.3'
+        compile 'com.github.maxwell-nc:ZXingScanLite:v1.4'
 }
 ```
 ##Usage
@@ -25,20 +25,20 @@ ZXingScaner.scanBuilder(MainActivity.this).scan();
 ```
 2.Add the Callback
 ```
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
 
-        ZXingScaner.resultBuilder(requestCode, resultCode, data)
-                .resultListener(new ZXingScaner.onGetResultContentListener() {
-                    @Override
-                    public void onGetResultContent(String result) {
-                        //result is qrcode text
-                    }
-                })
-                .result();
+    ZXingScaner.resultBuilder(requestCode, resultCode, data)
+            .resultListener(new ZXingScaner.onGetResultContentListener() {
+                @Override
+                public void onGetResultContent(String result) {
+                    //result is qrcode text
+                }
+            })
+            .result();
 
-    }
+}
 ```
 
 ##Use your layout
@@ -87,18 +87,22 @@ if you do not set bounds,OverlayView will set in view group center and size was 
 
 2.config
 ```
-final ViewGroup scanLayout = (ViewGroup) View.inflate(this, R.layout.activity_scan, null);
-scanLayout.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        onBackPressed();//do not use finish();
-    }
-});
 ZXingScaner.configBuilder()
-                        .setLayout(scanLayout, R.id.sv_scan)
-                        .scanArea(new Rect(0,230,720,950))//set actual scan area ,not necessary
-                        .buildScanAfterConfig(MainActivity.this)
-                        .scan();
+        .setLayout(R.layout.activity_scan, R.id.sv_scan)//use with inflateCallback
+        .inflateCallback(new OnInflateListener() {
+            @Override
+            public void onFinishInflate(final Activity captureActivity) {
+                captureActivity.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        captureActivity.finish();
+                    }
+                });
+            }
+        })
+        .scanArea(new Rect(0, 230, 720, 950))//set actual scan area ,not necessary
+        .buildScanAfterConfig(MainActivity.this)
+        .scan();
 ```
 ###Merge Problem
 add follow in AndroidManifest.xml
