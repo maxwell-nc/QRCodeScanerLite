@@ -15,7 +15,7 @@ allprojects {
 2.Add the dependency
 ```
 dependencies {
-    compile 'com.github.maxwell-nc:ZXingScanLite:15448c947e'
+        compile 'com.github.maxwell-nc:ZXingScanLite:v1.1'
 }
 ```
 ##Usage
@@ -79,6 +79,14 @@ ZXingScaner.configBuilder()
                         .buildScanAfterConfig(MainActivity.this)
                         .scan();
 ```
+###Merge Problem
+add follow in AndroidManifest.xml
+```
+	xmlns:tools="http://schemas.android.com/tools"
+    <uses-sdk
+        tools:overrideLibrary="pres.mc.maxwell.library"/>
+```
+
 ###Notice
 use more configure function with see source comment and method.
 this project is change from a network version,but i forget where does it come from,contract me if you know!
