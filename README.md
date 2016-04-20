@@ -15,7 +15,7 @@ allprojects {
 2.Add the dependency
 ```
 dependencies {
-        compile 'com.github.maxwell-nc:ZXingScanLite:v1.2'
+        compile 'com.github.maxwell-nc:ZXingScanLite:v1.3'
 }
 ```
 ##Usage
@@ -50,6 +50,16 @@ ZXingScaner.scanBuilder(MainActivity.this).scan();
     android:layout_height="0dp"
     android:layout_weight="1">
 
+    <TextView
+        android:id="@+id/tv_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:text="this is a sample of bar view,click me back."
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"/>
+		
     <!-- below view is not necessary -->
     <pres.mc.maxwell.library.ui.OverlayView
         android:layout_width="match_parent"
@@ -77,8 +87,15 @@ if you do not set bounds,OverlayView will set in view group center and size was 
 
 2.config
 ```
+final ViewGroup scanLayout = (ViewGroup) View.inflate(this, R.layout.activity_scan, null);
+scanLayout.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        onBackPressed();//do not use finish();
+    }
+});
 ZXingScaner.configBuilder()
-                        .setLayout(R.layout.activity_scan, R.id.sv_scan)
+                        .setLayout(scanLayout, R.id.sv_scan)
                         .scanArea(new Rect(0,230,720,950))//set actual scan area ,not necessary
                         .buildScanAfterConfig(MainActivity.this)
                         .scan();

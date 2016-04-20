@@ -5,10 +5,15 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <View
+    <TextView
+        android:id="@+id/tv_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:text="this is a sample of bar view,click me back."
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"/>
 
     <pres.mc.maxwell.library.ui.ScanLayout
         android:id="@+id/sv_scan"

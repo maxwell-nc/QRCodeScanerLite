@@ -3,6 +3,7 @@ package pres.mc.maxwell.library;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.view.ViewGroup;
 
 import pres.mc.maxwell.library.config.ScanConfig;
 
@@ -80,9 +81,9 @@ public class ZXingScaner {
         }
 
         //自定义布局
-        if (mConfigBuilder.layoutResId > 0 && mConfigBuilder.scanViewResId > 0) {
-            ScanConfig.scanLayoutRes = mConfigBuilder.layoutResId;
-            ScanConfig.scanVieId = mConfigBuilder.scanViewResId;
+        if (mConfigBuilder.layoutView !=null && mConfigBuilder.scanViewResId > 0) {
+            ScanConfig.scanLayout = mConfigBuilder.layoutView;
+            ScanConfig.scanViewId = mConfigBuilder.scanViewResId;
         }
 
         //错误的监听
@@ -123,7 +124,7 @@ public class ZXingScaner {
     public static class ConfigBuilder {
 
         long focusInterval;
-        int layoutResId;
+        ViewGroup layoutView;
         int scanViewResId;
         Rect rect;
         onErrorListener errorListener;
@@ -139,8 +140,8 @@ public class ZXingScaner {
         /**
          * 自定义扫描布局
          */
-        public ConfigBuilder setLayout(int layoutResId, int scanViewResId) {
-            this.layoutResId = layoutResId;
+        public ConfigBuilder setLayout(ViewGroup layoutView, int scanViewResId) {
+            this.layoutView = layoutView;
             this.scanViewResId = scanViewResId;
             return this;
         }

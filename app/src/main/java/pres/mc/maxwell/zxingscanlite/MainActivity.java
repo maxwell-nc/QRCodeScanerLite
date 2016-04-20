@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,13 +25,20 @@ public class MainActivity extends Activity {
         scanBtn = (Button) findViewById(R.id.btn_scan);
         contentText = (TextView) findViewById(R.id.tv_content);
 
+        final ViewGroup scanLayout = (ViewGroup) View.inflate(this, R.layout.activity_scan, null);
+        scanLayout.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();//do not use finish();
+            }
+        });
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ZXingScaner.configBuilder()
-                        .setLayout(R.layout.activity_scan, R.id.sv_scan)
-                        .scanArea(new Rect(0,230,720,950))
+                        .setLayout(scanLayout, R.id.sv_scan)
+                        .scanArea(new Rect(0, 230, 720, 950))
                         .buildScanAfterConfig(MainActivity.this)
                         .scan();
 

@@ -49,7 +49,12 @@ public final class CaptureActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(ScanConfig.scanLayoutRes);
+
+        if (ScanConfig.scanLayout == null) {
+            setContentView(ScanConfig.DEFAULT_SCAN_LAYOUT_RES);
+        } else {
+            setContentView(ScanConfig.scanLayout);
+        }
 
         // 保持Activity处于唤醒状态
         Window window = getWindow();
@@ -69,7 +74,7 @@ public final class CaptureActivity extends Activity implements
 
         handler = null;
 
-        ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanVieId);
+        ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanViewId);
         SurfaceView surfaceView = scanLayout.getSurfaceView();
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
@@ -93,7 +98,7 @@ public final class CaptureActivity extends Activity implements
         }
         cameraManager.closeDriver();
         if (!hasSurface) {
-            ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanVieId);
+            ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanViewId);
             SurfaceView surfaceView = scanLayout.getSurfaceView();
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
             surfaceHolder.removeCallback(this);
