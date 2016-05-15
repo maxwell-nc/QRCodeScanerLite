@@ -9,7 +9,7 @@
         android:label="@string/app_name">
         <activity
             android:name="com.google.zxing.android.CaptureActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
     </application>
 
