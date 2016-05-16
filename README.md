@@ -15,7 +15,7 @@ allprojects {
 2.Add the dependency
 ```groovy
 dependencies {
-        compile 'com.github.maxwell-nc:ZXingScanLite:v1.4'
+        compile 'com.github.maxwell-nc:ZXingScanLite:v1.5'
 }
 ```
 ##Usage
