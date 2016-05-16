@@ -1,7 +1,7 @@
 <manifest package="pres.mc.maxwell.library"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- 扫描二维码需要的权限 -->
+    <!-- sanner permission -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
