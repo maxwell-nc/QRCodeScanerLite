@@ -69,7 +69,7 @@ public class ZXingScaner {
                 ScanConfig.captureClass != null ?
                         ScanConfig.captureClass :
                         DefaultCaptureActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);//防止多次启动
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_SINGLE_TOP);//防止多次启动
         mScanBuilder.activity.startActivityForResult(intent, REQUEST_CODE_SCAN);
     }
 
