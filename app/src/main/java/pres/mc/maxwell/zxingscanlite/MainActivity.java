@@ -8,42 +8,43 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.zxing.android.CaptureActivity.OnInflateListener;
-
 import pres.mc.maxwell.library.ZXingScaner;
 
 
 public class MainActivity extends Activity {
 
     private TextView contentText;
-    private Button scanBtn;
+    private Button defaultBtn;
+    private Button customBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scanBtn = (Button) findViewById(R.id.btn_scan);
+        defaultBtn = (Button) findViewById(R.id.btn_default);
+        customBtn = (Button) findViewById(R.id.btn_custom);
         contentText = (TextView) findViewById(R.id.tv_content);
 
-        scanBtn.setOnClickListener(new View.OnClickListener() {
+        //默认界面
+        defaultBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ZXingScaner.scanBuilder(MainActivity.this).scan();
+
+            }
+        });
+
+        //自定义
+        customBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ZXingScaner.configBuilder()
-                        .setLayout(R.layout.activity_scan, R.id.sv_scan)
-                        .inflateCallback(new OnInflateListener() {
-                            @Override
-                            public void onFinishInflate(final Activity captureActivity) {
-                                captureActivity.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        captureActivity.finish();
-                                    }
-                                });
-                            }
-                        })
-                        .scanArea(new Rect(0, 230, 720, 950))
+                        .autoFocusInterval(1500L)//自动对焦间隔毫秒，默认1000L
+                        .setCaptureClass(CaptureActivity.class)//不设置则使用默认界面
+                        .scanArea(new Rect(0, 230, 720, 950))//这个是扫描区域，不是Overlay区域
                         .buildScanAfterConfig(MainActivity.this)
                         .scan();
 

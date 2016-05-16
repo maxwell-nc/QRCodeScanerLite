@@ -25,7 +25,7 @@ import android.util.Log;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
-import com.google.zxing.android.CaptureActivity;
+import com.google.zxing.activity.DefaultCaptureActivity;
 import com.google.zxing.android.PreferencesActivity;
 
 import java.util.Collection;
@@ -44,12 +44,12 @@ public final class DecodeThread extends Thread {
     public static final String BARCODE_BITMAP = "barcode_bitmap";
     public static final String BARCODE_SCALED_FACTOR = "barcode_scaled_factor";
 
-    private final CaptureActivity activity;
+    private final DefaultCaptureActivity activity;
     private final Map<DecodeHintType, Object> hints;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
-    public DecodeThread(CaptureActivity activity,
+    public DecodeThread(DefaultCaptureActivity activity,
                         Collection<BarcodeFormat> decodeFormats,
                         Map<DecodeHintType, ?> baseHints,
                         String characterSet,

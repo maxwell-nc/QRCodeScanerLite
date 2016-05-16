@@ -1,4 +1,4 @@
-package com.google.zxing.android;
+package com.google.zxing.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,16 +19,13 @@ import com.google.zxing.camera.CameraManager;
 import java.util.Collection;
 import java.util.Map;
 
-import pres.mc.maxwell.library.config.ScanConfig;
+import pres.mc.maxwell.library.R;
 import pres.mc.maxwell.library.ui.ScanLayout;
 
-
 /**
- * 这个activity打开相机，在后台线程做常规的扫描；它绘制了一个结果view来帮助正确地显示条形码，在扫描的时候显示反馈信息，
- * 然后在扫描成功的时候覆盖扫描结果
+ * 默认的摄像界面
  */
-public final class CaptureActivity extends Activity implements
-        SurfaceHolder.Callback {
+public class DefaultCaptureActivity extends AbsCaptureActivity implements SurfaceHolder.Callback {
 
     // 相机控制
     private CameraManager cameraManager;
@@ -37,6 +34,7 @@ public final class CaptureActivity extends Activity implements
     private Collection<BarcodeFormat> decodeFormats;
     private Map<DecodeHintType, ?> decodeHints;
     private String characterSet;
+    private SurfaceView surfaceView;
 
     public Handler getHandler() {
         return handler;
@@ -50,17 +48,23 @@ public final class CaptureActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(ScanConfig.scanLayoutId);
+        setContentView(setContentId());
 
-        if (ScanConfig.inflateListener != null) {
-            ScanConfig.inflateListener.onFinishInflate(this);
-        }
+        ScanLayout scanLayout = (ScanLayout) findViewById(setScanLayoutId());
+        surfaceView = scanLayout.getSurfaceView();
 
         // 保持Activity处于唤醒状态
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         hasSurface = false;
+
+        afterCreate(savedInstanceState);
+    }
+
+    @Override
+    public void afterCreate(Bundle savedInstanceState) {
+
     }
 
     @Override
@@ -74,8 +78,6 @@ public final class CaptureActivity extends Activity implements
 
         handler = null;
 
-        ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanViewId);
-        SurfaceView surfaceView = scanLayout.getSurfaceView();
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
             // activity在paused时但不会stopped,因此surface仍旧存在；
@@ -98,17 +100,10 @@ public final class CaptureActivity extends Activity implements
         }
         cameraManager.closeDriver();
         if (!hasSurface) {
-            ScanLayout scanLayout = (ScanLayout) findViewById(ScanConfig.scanViewId);
-            SurfaceView surfaceView = scanLayout.getSurfaceView();
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
             surfaceHolder.removeCallback(this);
         }
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -160,26 +155,29 @@ public final class CaptureActivity extends Activity implements
                         decodeHints, characterSet, cameraManager);
             }
         } catch (Exception e) {
-            displayFrameworkBugMessageAndExit();
+            onFailedToOpenCamera();
         }
     }
 
-    /**
-     * 显示底层错误信息并退出应用
-     */
-    private void displayFrameworkBugMessageAndExit() {
-
-        if (ScanConfig.errorListener != null) {
-            ScanConfig.errorListener.onOpenCameraError();
-            return;
-        }
-
+    @Override
+    public void onFailedToOpenCamera() {
+        //显示底层错误信息并退出应用
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示");
         builder.setMessage("摄像头设备异常，请允许拍摄权限或重启设备！");
         builder.setPositiveButton("确定", new FinishListener(this));
         builder.setOnCancelListener(new FinishListener(this));
         builder.show();
+    }
+
+    @Override
+    public int setContentId() {
+        return R.layout.activity_capture;
+    }
+
+    @Override
+    public int setScanLayoutId() {
+        return R.id.sv_scan;
     }
 
     /**
@@ -211,11 +209,5 @@ public final class CaptureActivity extends Activity implements
 
     }
 
-    public interface OnInflateListener {
-        /**
-         * 填充布局完成时
-         */
-        void onFinishInflate(Activity captureActivity);
-    }
-
 }
+

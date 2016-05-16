@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing.android;
+package com.google.zxing.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -43,7 +43,7 @@ import pres.mc.maxwell.library.R;
 public final class CaptureActivityHandler extends Handler {
 
 
-    private final CaptureActivity activity;
+    private final DefaultCaptureActivity activity;
     private final DecodeThread decodeThread;
     private State state;
     private final CameraManager cameraManager;
@@ -52,7 +52,7 @@ public final class CaptureActivityHandler extends Handler {
         PREVIEW, SUCCESS, DONE
     }
 
-    public CaptureActivityHandler(CaptureActivity activity,
+    public CaptureActivityHandler(DefaultCaptureActivity activity,
                                   Collection<BarcodeFormat> decodeFormats,
                                   Map<DecodeHintType, ?> baseHints, String characterSet,
                                   CameraManager cameraManager) {

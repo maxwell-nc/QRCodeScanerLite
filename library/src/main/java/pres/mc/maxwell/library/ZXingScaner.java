@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 
-import com.google.zxing.android.CaptureActivity.OnInflateListener;
+import com.google.zxing.activity.DefaultCaptureActivity;
+import com.google.zxing.activity.AbsCaptureActivity;
 
 import pres.mc.maxwell.library.config.ScanConfig;
 
@@ -64,7 +65,11 @@ public class ZXingScaner {
             return;
         }
 
-        Intent intent = new Intent(mScanBuilder.activity, com.google.zxing.android.CaptureActivity.class);
+        Intent intent = new Intent(mScanBuilder.activity,
+                ScanConfig.captureClass != null ?
+                        ScanConfig.captureClass :
+                        DefaultCaptureActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);//防止多次启动
         mScanBuilder.activity.startActivityForResult(intent, REQUEST_CODE_SCAN);
     }
 
@@ -81,20 +86,9 @@ public class ZXingScaner {
             ScanConfig.autoFocusIntervalMs = mConfigBuilder.focusInterval;
         }
 
-        //自定义布局
-        if (mConfigBuilder.layoutId > 0 && mConfigBuilder.scanViewResId > 0) {
-            ScanConfig.scanLayoutId = mConfigBuilder.layoutId;
-            ScanConfig.scanViewId = mConfigBuilder.scanViewResId;
-        }
-
-        //布局监听
-        if (mConfigBuilder.inflateListener != null) {
-            ScanConfig.inflateListener = mConfigBuilder.inflateListener;
-        }
-
-        //错误的监听
-        if (mConfigBuilder.errorListener != null) {
-            ScanConfig.errorListener = mConfigBuilder.errorListener;
+        //自定义摄像界面
+        if (mConfigBuilder.captureClass != null) {
+            ScanConfig.captureClass = mConfigBuilder.captureClass;
         }
 
         //实际扫描区域设置
@@ -130,11 +124,8 @@ public class ZXingScaner {
     public static class ConfigBuilder {
 
         long focusInterval;
-        int layoutId;
-        int scanViewResId;
         Rect rect;
-        onErrorListener errorListener;
-        OnInflateListener inflateListener;
+        Class<? extends AbsCaptureActivity> captureClass;
 
         /**
          * 设置摄像头对焦间隔毫秒
@@ -144,28 +135,8 @@ public class ZXingScaner {
             return this;
         }
 
-        /**
-         * 自定义扫描布局
-         */
-        public ConfigBuilder setLayout(int layoutId, int scanViewResId) {
-            this.layoutId = layoutId;
-            this.scanViewResId = scanViewResId;
-            return this;
-        }
-
-        /**
-         * 监听布局填充
-         */
-        public ConfigBuilder inflateCallback(OnInflateListener inflateListener) {
-            this.inflateListener = inflateListener;
-            return this;
-        }
-
-        /**
-         * 错误监听器
-         */
-        public ConfigBuilder errorCallback(onErrorListener listener) {
-            this.errorListener = listener;
+        public ConfigBuilder setCaptureClass(Class<? extends AbsCaptureActivity> captureClass) {
+            this.captureClass = captureClass;
             return this;
         }
 
