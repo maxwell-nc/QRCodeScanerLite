@@ -4,7 +4,7 @@ A lite version of zxing android camera scan library,configurable and very easy t
 
 ##Gradle Configure
 1.Add the JitPack repository to your build file
-```
+```groovy
 allprojects {
         repositories {
             ...
@@ -13,18 +13,18 @@ allprojects {
 }
 ```
 2.Add the dependency
-```
+```groovy
 dependencies {
         compile 'com.github.maxwell-nc:ZXingScanLite:v1.4'
 }
 ```
 ##Usage
 1.Simple scan without configuration
-```
+```java
 ZXingScaner.scanBuilder(MainActivity.this).scan();
 ```
 2.Add the Callback
-```
+```java
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
@@ -43,7 +43,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ##Use your layout
 1.add in your layout
-```
+```xml
 <pres.mc.maxwell.library.ui.ScanLayout
     android:id="@+id/sv_scan"
     android:layout_width="match_parent"
@@ -75,7 +75,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         app:hint_color="@android:color/white"
         app:hint_margin_top="40dp"
         app:hint_size="24sp"
-        app:hint_text="正在扫描中..."
+        app:hint_text="scanning..."
         app:scan_line_color="@android:color/white"
         app:scan_line_height="4dp"
         app:scan_line_speed="10"/>
@@ -86,30 +86,51 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 if you do not set bounds,OverlayView will set in view group center and size was half of view width;
 
 2.config
-```
+```java
 ZXingScaner.configBuilder()
-        .setLayout(R.layout.activity_scan, R.id.sv_scan)//use with inflateCallback
-        .inflateCallback(new OnInflateListener() {
-            @Override
-            public void onFinishInflate(final Activity captureActivity) {
-                captureActivity.findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        captureActivity.finish();
-                    }
-                });
-            }
-        })
-        .scanArea(new Rect(0, 230, 720, 950))//set actual scan area ,not necessary
+        .autoFocusInterval(1500L)
+        .setCaptureClass(CaptureActivity.class)//if not set,use default
+        .scanArea(new Rect(0, 230, 720, 950))//scan area not overlay
         .buildScanAfterConfig(MainActivity.this)
         .scan();
 ```
+
+3.custom activity
+you can use AbsCustomCaptureActivity as parent
+```java
+public class CaptureActivity extends AbsCustomCaptureActivity {
+
+    @Override
+    public void afterCreate(Bundle savedInstanceState) {
+	
+		//do your job
+        findViewById(R.id.tv_bar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public int setContentId() {
+        return R.layout.activity_scan;//your custom layout
+    }
+
+    @Override
+    public int setScanLayoutId() {
+        return R.id.sv_scan;//scan layout id in your custom layout
+    }
+
+}
+```
+
 ###Merge Problem
 add follow in AndroidManifest.xml
-```
-	xmlns:tools="http://schemas.android.com/tools"
-    <uses-sdk
-        tools:overrideLibrary="pres.mc.maxwell.library"/>
+```xml
+xmlns:tools="http://schemas.android.com/tools"
+<uses-sdk
+    tools:overrideLibrary="pres.mc.maxwell.library"/>
 ```
 
 ###Notice

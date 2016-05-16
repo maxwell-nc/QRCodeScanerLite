@@ -13,7 +13,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- 设置singleTop防止多次启动 -->
         <activity
             android:name=".CaptureActivity"
             android:screenOrientation="portrait" />

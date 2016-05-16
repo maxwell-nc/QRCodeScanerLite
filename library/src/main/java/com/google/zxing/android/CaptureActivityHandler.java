@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing.activity;
+package com.google.zxing.android;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import android.os.Message;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
+import com.google.zxing.activity.DefaultCaptureActivity;
 import com.google.zxing.camera.CameraManager;
 import com.google.zxing.decode.DecodeThread;
 
