@@ -13,16 +13,16 @@ import pres.mc.maxwell.library.config.ScanConfig;
 /**
  * Zxing扫描工具类
  */
-public class ZXingScaner {
+public class QRCodeScaner {
 
     private ScanBuilder mScanBuilder;
     private ConfigBuilder mConfigBuilder;
 
-    private ZXingScaner(ScanBuilder scanBuilder) {
+    private QRCodeScaner(ScanBuilder scanBuilder) {
         this.mScanBuilder = scanBuilder;
     }
 
-    public ZXingScaner(ConfigBuilder configBuilder) {
+    public QRCodeScaner(ConfigBuilder configBuilder) {
         this.mConfigBuilder = configBuilder;
     }
 
@@ -116,7 +116,7 @@ public class ZXingScaner {
         }
 
         public void config() {
-            new ZXingScaner(this).executeConfig();
+            new QRCodeScaner(this).executeConfig();
         }
 
         public ScanBuilder buildScanAfterConfig(Activity activity) {
@@ -161,7 +161,7 @@ public class ZXingScaner {
          * 开始扫描二维码
          */
         public void scan() {
-            new ZXingScaner(this).executeScan();
+            new QRCodeScaner(this).executeScan();
         }
     }
 

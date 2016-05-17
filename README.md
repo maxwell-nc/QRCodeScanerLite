@@ -1,4 +1,4 @@
-##ZXingScanLite
+##QRCodeScanerLite
 A lite version of zxing android camera scan library,configurable and very easy to use and change layout.
 
 
@@ -15,30 +15,22 @@ allprojects {
 2.Add the dependency
 ```groovy
 dependencies {
-        compile 'com.github.maxwell-nc:ZXingScanLite:v1.5'
+        compile 'com.github.maxwell-nc:QRCodeScanerLite:v1.6'
 }
 ```
 ##Usage
 1.Simple scan without configuration
 ```java
-ZXingScaner.scanBuilder(MainActivity.this).scan();
-```
-2.Add the Callback
-```java
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    ZXingScaner.resultBuilder(requestCode, resultCode, data)
-            .resultListener(new ZXingScaner.onGetResultContentListener() {
-                @Override
-                public void onGetResultContent(String result) {
-                    //result is qrcode text
-                }
-            })
-            .result();
-
-}
+	QRCodeScaner.scanBuilder(MainActivity.this)
+        //.useExistConfig(true)//default is false
+        .resultListener(new QRCodeScaner.onGetResultContentListener() {//Callback
+            @Override
+            public void onGetResultContent(AbsCaptureActivity captureActivity, String result) {
+                contentText.setText(result);
+                captureActivity.finish();
+            }
+        })
+        .scan();
 ```
 
 ##Use your layout
@@ -87,7 +79,7 @@ if you do not set bounds,OverlayView will set in view group center and size was 
 
 2.config
 ```java
-ZXingScaner.configBuilder()
+QRCodeScaner.configBuilder()
         .autoFocusInterval(1500L)
         .setCaptureClass(CaptureActivity.class)//if not set,use default
         .scanArea(new Rect(0, 230, 720, 950))//scan area not overlay
@@ -122,6 +114,12 @@ public class CaptureActivity extends AbsCustomCaptureActivity {
         return R.id.sv_scan;//scan layout id in your custom layout
     }
 
+    @Override
+    protected void onGetResult(String content) {//not necessary,callback after result listener callback
+        super.onGetResult(content);
+        ((TextView)findViewById(R.id.tv_bar)).setText(content);
+        scanAgain();
+    }
 }
 ```
 
