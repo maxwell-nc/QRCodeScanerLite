@@ -1,12 +1,13 @@
 package pres.mc.maxwell.zxingscanlite;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.zxing.activity.AbsCaptureActivity;
 
 import pres.mc.maxwell.library.ZXingScaner;
 
@@ -31,7 +32,16 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                ZXingScaner.scanBuilder(MainActivity.this).scan();
+                ZXingScaner.scanBuilder(MainActivity.this)
+                        //.useExistConfig(true)//继承上次的配置，默认为false
+                        .resultListener(new ZXingScaner.onGetResultContentListener() {
+                            @Override
+                            public void onGetResultContent(AbsCaptureActivity captureActivity, String result) {
+                                contentText.setText(result);
+                                captureActivity.finish();
+                            }
+                        })
+                        .scan();
 
             }
         });
@@ -46,7 +56,7 @@ public class MainActivity extends Activity {
                         .setCaptureClass(CaptureActivity.class)//不设置则使用默认界面
                         .scanArea(new Rect(0, 230, 720, 950))//这个是扫描区域，不是Overlay区域
                         .buildScanAfterConfig(MainActivity.this)
-                        .scan();
+                        .scan();//回调写在自定义的Actiivty中的onGetResult
 
             }
         });
@@ -54,18 +64,4 @@ public class MainActivity extends Activity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        ZXingScaner.resultBuilder(requestCode, resultCode, data)
-                .resultListener(new ZXingScaner.onGetResultContentListener() {
-                    @Override
-                    public void onGetResultContent(String result) {
-                        contentText.setText(result);
-                    }
-                })
-                .result();
-
-    }
 }

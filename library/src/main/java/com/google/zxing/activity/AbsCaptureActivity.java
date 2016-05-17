@@ -28,4 +28,8 @@ public abstract class AbsCaptureActivity extends Activity{
      */
     public abstract int setScanLayoutId();
 
+    /**
+     * 设置结果监听器，执行在resultListener之后，可不设置
+     */
+    protected abstract void onGetResult(String content);
 }

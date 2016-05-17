@@ -2,6 +2,7 @@ package pres.mc.maxwell.zxingscanlite;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import pres.mc.maxwell.library.ui.AbsCustomCaptureActivity;
 
@@ -30,4 +31,10 @@ public class CaptureActivity extends AbsCustomCaptureActivity {
         return R.id.sv_scan;//注意这个是app模块的，自定义的
     }
 
+    @Override
+    protected void onGetResult(String content) {
+        super.onGetResult(content);
+        ((TextView)findViewById(R.id.tv_bar)).setText(content);
+        scanAgain();
+    }
 }

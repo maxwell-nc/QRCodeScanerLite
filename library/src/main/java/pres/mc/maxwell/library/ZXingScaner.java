@@ -1,11 +1,12 @@
 package pres.mc.maxwell.library;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 
-import com.google.zxing.activity.DefaultCaptureActivity;
 import com.google.zxing.activity.AbsCaptureActivity;
+import com.google.zxing.activity.DefaultCaptureActivity;
 
 import pres.mc.maxwell.library.config.ScanConfig;
 
@@ -15,20 +16,10 @@ import pres.mc.maxwell.library.config.ScanConfig;
 public class ZXingScaner {
 
     private ScanBuilder mScanBuilder;
-    private ResultBuilder mResultBuilder;
     private ConfigBuilder mConfigBuilder;
-
-    //用于二维码扫描
-    private static final int REQUEST_CODE_SCAN = 0x0000;
-    private static final String DECODED_CONTENT_KEY = "codedContent";
-    public static final int RESULT_OK = -1;
 
     private ZXingScaner(ScanBuilder scanBuilder) {
         this.mScanBuilder = scanBuilder;
-    }
-
-    public ZXingScaner(ResultBuilder resultBuilder) {
-        this.mResultBuilder = resultBuilder;
     }
 
     public ZXingScaner(ConfigBuilder configBuilder) {
@@ -40,14 +31,6 @@ public class ZXingScaner {
      */
     public static ScanBuilder scanBuilder(Activity activity) {
         return new ScanBuilder(activity);
-    }
-
-
-    /**
-     * 获取一个结果构建器
-     */
-    public static ResultBuilder resultBuilder(int requestCode, int resultCode, Intent data) {
-        return new ResultBuilder(requestCode, resultCode, data);
     }
 
     /**
@@ -65,12 +48,18 @@ public class ZXingScaner {
             return;
         }
 
-        Intent intent = new Intent(mScanBuilder.activity,
-                ScanConfig.captureClass != null ?
-                        ScanConfig.captureClass :
-                        DefaultCaptureActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);//防止多次启动
-        mScanBuilder.activity.startActivityForResult(intent, REQUEST_CODE_SCAN);
+        //不判断null可以覆盖之前的设置
+        ScanConfig.listener = mScanBuilder.listener;
+
+        Intent intent;
+        if (mScanBuilder.useExistConfig && ScanConfig.captureClazz != null) {//使用配置
+            intent = new Intent(mScanBuilder.context, ScanConfig.captureClazz);
+        } else {
+            intent = new Intent(mScanBuilder.context, DefaultCaptureActivity.class);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);//防止多次启动
+        mScanBuilder.context.startActivity(intent);
     }
 
     /**
@@ -86,10 +75,8 @@ public class ZXingScaner {
             ScanConfig.autoFocusIntervalMs = mConfigBuilder.focusInterval;
         }
 
-        //自定义摄像界面
-        if (mConfigBuilder.captureClass != null) {
-            ScanConfig.captureClass = mConfigBuilder.captureClass;
-        }
+        //自定义摄像界面，不判断null可以覆盖之前的设置
+        ScanConfig.captureClazz = mConfigBuilder.captureClazz;
 
         //实际扫描区域设置
         if (mConfigBuilder.rect != null) {
@@ -102,30 +89,13 @@ public class ZXingScaner {
     }
 
     /**
-     * 执行结果处理
-     */
-    public void executeResult() {
-        if (mResultBuilder == null || mResultBuilder.listener == null) {
-            return;
-        }
-
-        if (mResultBuilder.requestCode == REQUEST_CODE_SCAN && mResultBuilder.resultCode == RESULT_OK) {
-            if (mResultBuilder.data != null) {
-                //解码结果
-                String content = mResultBuilder.data.getStringExtra(DECODED_CONTENT_KEY);
-                mResultBuilder.listener.onGetResultContent(content);
-            }
-        }
-    }
-
-    /**
      * 配置构建器
      */
     public static class ConfigBuilder {
 
         long focusInterval;
         Rect rect;
-        Class<? extends AbsCaptureActivity> captureClass;
+        Class<? extends AbsCaptureActivity> captureClazz;
 
         /**
          * 设置摄像头对焦间隔毫秒
@@ -135,8 +105,8 @@ public class ZXingScaner {
             return this;
         }
 
-        public ConfigBuilder setCaptureClass(Class<? extends AbsCaptureActivity> captureClass) {
-            this.captureClass = captureClass;
+        public ConfigBuilder setCaptureClass(Class<? extends AbsCaptureActivity> captureClazz) {
+            this.captureClazz = captureClazz;
             return this;
         }
 
@@ -151,7 +121,7 @@ public class ZXingScaner {
 
         public ScanBuilder buildScanAfterConfig(Activity activity) {
             config();
-            return new ScanBuilder(activity);
+            return new ScanBuilder(activity).useExistConfig(true);
         }
     }
 
@@ -160,13 +130,31 @@ public class ZXingScaner {
      */
     public static class ScanBuilder {
 
-        Activity activity;
+        Context context;
+        onGetResultContentListener listener;
+        private boolean useExistConfig = false;//默认采用false
 
         /**
-         * 设置依附的Activity
+         * 设置上下文
          */
-        public ScanBuilder(Activity activity) {
-            this.activity = activity;
+        public ScanBuilder(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * 结果监听器
+         */
+        public ScanBuilder resultListener(onGetResultContentListener listener) {
+            this.listener = listener;
+            return this;
+        }
+
+        /**
+         * 使用配置
+         */
+        public ScanBuilder useExistConfig(boolean useExistConfig) {
+            this.useExistConfig = useExistConfig;
+            return this;
         }
 
         /**
@@ -178,52 +166,16 @@ public class ZXingScaner {
     }
 
     /**
-     * 结果构建器
-     */
-    public static class ResultBuilder {
-
-        int requestCode;
-        int resultCode;
-        Intent data;
-
-        onGetResultContentListener listener;
-
-        /**
-         * 设置请求码，结果码，返回结果数据
-         */
-        public ResultBuilder(int requestCode, int resultCode, Intent data) {
-            this.requestCode = requestCode;
-            this.resultCode = resultCode;
-            this.data = data;
-        }
-
-        /**
-         * 结果监听器
-         */
-        public ResultBuilder resultListener(onGetResultContentListener listener) {
-            this.listener = listener;
-            return this;
-        }
-
-        /**
-         * 处理二维码结果
-         */
-        public void result() {
-            new ZXingScaner(this).executeResult();
-        }
-
-    }
-
-    /**
      * 获取结果监听器
      */
     public interface onGetResultContentListener {
         /**
          * 获取结果时的操作
          *
-         * @param result 二维码文本数据
+         * @param captureActivity 扫描的activity
+         * @param result          二维码文本数据
          */
-        void onGetResultContent(String result);
+        void onGetResultContent(AbsCaptureActivity captureActivity, String result);
     }
 
     /**

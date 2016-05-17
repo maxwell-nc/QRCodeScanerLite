@@ -18,7 +18,6 @@ package com.google.zxing.android;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -79,7 +78,7 @@ public final class CaptureActivityHandler extends Handler {
         } else if (message.what == R.id.decode_succeeded) {
             // 解码成功
             state = State.SUCCESS;
-            Bundle bundle = message.getData();
+            //Bundle bundle = message.getData();
             //Bitmap barcode = null;
             //float scaleFactor = 1.0f;
             //if (bundle != null) {

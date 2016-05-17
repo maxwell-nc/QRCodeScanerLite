@@ -2,12 +2,15 @@ package pres.mc.maxwell.library.config;
 
 import com.google.zxing.activity.AbsCaptureActivity;
 
+import pres.mc.maxwell.library.ZXingScaner;
+
 /**
  * 存放扫描的配置
  */
 public class ScanConfig {
 
-    public static Class<? extends AbsCaptureActivity> captureClass;
+    public static Class<? extends AbsCaptureActivity> captureClazz;
+    public static ZXingScaner.onGetResultContentListener listener;
 
     //实际扫描的区域，如果不设置幕宽度的居中正方形
     public static int scanLeft;

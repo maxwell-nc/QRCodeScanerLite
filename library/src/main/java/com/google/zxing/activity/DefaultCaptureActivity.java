@@ -3,9 +3,9 @@ package com.google.zxing.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import pres.mc.maxwell.library.R;
+import pres.mc.maxwell.library.config.ScanConfig;
 import pres.mc.maxwell.library.ui.ScanLayout;
 
 /**
@@ -130,11 +131,22 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
      */
     public void handleDecode(Result rawResult) {
 
-        Intent intent = getIntent();
-        intent.putExtra("codedContent", rawResult.getText());
+        if (ScanConfig.listener != null) {
+            ScanConfig.listener.onGetResultContent(this, rawResult.getText());
+        }
 
-        setResult(RESULT_OK, intent);
-        finish();
+        onGetResult(rawResult.getText());
+    }
+
+    /**
+     * 再次扫描
+     * 扫描成功后会停止扫描，请调用此方法再次扫描
+     */
+    public void scanAgain() {
+        if (handler != null) {
+            Message message = Message.obtain(handler, R.id.restart_preview);
+            message.sendToTarget();
+        }
     }
 
     /**
@@ -179,6 +191,11 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
     @Override
     public int setScanLayoutId() {
         return R.id.sv_scan;
+    }
+
+    @Override
+    protected void onGetResult(String content) {
+
     }
 
     /**
