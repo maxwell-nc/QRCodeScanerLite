@@ -10,16 +10,10 @@ import pres.mc.maxwell.library.scanface.impl.BaseCapFragment;
  */
 public class CaptureFragment extends BaseCapFragment {
 
-    Activity mActivity;
-
-    public void setActivity(Activity activity) {
-        mActivity = activity;
-    }
-
     @Override
     public void onGetCodeContentResult(String codeContent) {
-        Toast.makeText(mActivity, codeContent, Toast.LENGTH_LONG).show();
-        mActivity.finish();
+        Toast.makeText(getActivity(), codeContent, Toast.LENGTH_LONG).show();
+        getActivity().finish();
     }
 
     @Override
