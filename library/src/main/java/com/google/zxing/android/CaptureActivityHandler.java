@@ -16,15 +16,12 @@
 
 package com.google.zxing.android;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
-import com.google.zxing.activity.DefaultCaptureActivity;
 import com.google.zxing.camera.CameraManager;
 import com.google.zxing.decode.DecodeThread;
 
@@ -32,6 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import pres.mc.maxwell.library.R;
+import pres.mc.maxwell.library.scanface.IScan;
 
 
 /**
@@ -43,7 +41,7 @@ import pres.mc.maxwell.library.R;
 public final class CaptureActivityHandler extends Handler {
 
 
-    private final DefaultCaptureActivity activity;
+    private final IScan scan;
     private final DecodeThread decodeThread;
     private State state;
     private final CameraManager cameraManager;
@@ -52,12 +50,12 @@ public final class CaptureActivityHandler extends Handler {
         PREVIEW, SUCCESS, DONE
     }
 
-    public CaptureActivityHandler(DefaultCaptureActivity activity,
+    public CaptureActivityHandler(IScan scan,
                                   Collection<BarcodeFormat> decodeFormats,
                                   Map<DecodeHintType, ?> baseHints, String characterSet,
                                   CameraManager cameraManager) {
-        this.activity = activity;
-        decodeThread = new DecodeThread(activity, decodeFormats, baseHints,
+        this.scan = scan;
+        decodeThread = new DecodeThread(scan, decodeFormats, baseHints,
                 characterSet, null);
         decodeThread.start();
         state = State.SUCCESS;
@@ -94,17 +92,14 @@ public final class CaptureActivityHandler extends Handler {
             //          .getFloat(DecodeThread.BARCODE_SCALED_FACTOR);
             //}
             //activity.handleDecode((Result) message.obj, barcode, scaleFactor);
-            activity.handleDecode((Result) message.obj);
+            Result result = (Result) message.obj;
+            scan.onGetCodeContentResult(result.getText());
 
         } else if (message.what == R.id.decode_failed) {
             // 尽可能快的解码，以便可以在解码失败时，开始另一次解码
             state = State.PREVIEW;
             cameraManager.requestPreviewFrame(decodeThread.getHandler(),
                     R.id.decode);
-        } else if (message.what == R.id.return_scan_result) {
-            //扫描结果，返回CaptureActivity处理
-            activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
-            activity.finish();
         }
     }
 

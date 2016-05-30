@@ -7,9 +7,6 @@
 
     <application
         android:label="@string/app_name">
-        <activity
-            android:name="com.google.zxing.activity.DefaultCaptureActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

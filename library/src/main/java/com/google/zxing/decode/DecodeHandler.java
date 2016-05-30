@@ -29,27 +29,27 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
-import com.google.zxing.activity.DefaultCaptureActivity;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import pres.mc.maxwell.library.R;
+import pres.mc.maxwell.library.scanface.IScan;
 
 
 public final class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final DefaultCaptureActivity activity;
+    private final IScan scan;
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
 
-    DecodeHandler(DefaultCaptureActivity activity, Map<DecodeHintType, Object> hints) {
+    DecodeHandler(IScan scan, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
-        this.activity = activity;
+        this.scan = scan;
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class DecodeHandler extends Handler {
         data = rotatedData;
         /*************************************/
 
-        PlanarYUVLuminanceSource source = activity.getCameraManager()
+        PlanarYUVLuminanceSource source = scan.getCameraManager()
                 .buildLuminanceSource(data, width, height);
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
@@ -104,7 +104,7 @@ public final class DecodeHandler extends Handler {
             }
         }
 
-        Handler handler = activity.getHandler();
+        Handler handler = scan.getHandler();
         if (rawResult != null) {
             // Don't log the barcode contents for security.
             long end = System.currentTimeMillis();

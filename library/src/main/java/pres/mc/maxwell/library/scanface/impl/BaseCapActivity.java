@@ -1,4 +1,4 @@
-package com.google.zxing.activity;
+package pres.mc.maxwell.library.scanface.impl;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.Result;
 import com.google.zxing.android.CaptureActivityHandler;
 import com.google.zxing.camera.CameraManager;
 
@@ -21,15 +20,14 @@ import java.util.Collection;
 import java.util.Map;
 
 import pres.mc.maxwell.library.R;
-import pres.mc.maxwell.library.config.ScanConfig;
+import pres.mc.maxwell.library.scanface.IScan;
 import pres.mc.maxwell.library.ui.ScanLayout;
 
 /**
- * 默认的摄像界面
+ * 基本的摄像头界面
  */
-public class DefaultCaptureActivity extends AbsCaptureActivity implements SurfaceHolder.Callback {
+public abstract class BaseCapActivity extends Activity implements IScan {
 
-    // 相机控制
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private boolean hasSurface;
@@ -60,14 +58,8 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         hasSurface = false;
-
-        afterCreate(savedInstanceState);
     }
 
-    @Override
-    public void afterCreate(Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void onResume() {
@@ -127,18 +119,6 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
     }
 
     /**
-     * 扫描成功，处理反馈信息
-     */
-    public void handleDecode(Result rawResult) {
-
-        if (ScanConfig.listener != null) {
-            ScanConfig.listener.onGetResultContent(this, rawResult.getText());
-        }
-
-        onGetResult(rawResult.getText());
-    }
-
-    /**
      * 再次扫描
      * 扫描成功后会停止扫描，请调用此方法再次扫描
      */
@@ -172,7 +152,6 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
         }
     }
 
-    @Override
     public void onFailedToOpenCamera() {
         //显示底层错误信息并退出应用
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -183,19 +162,12 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
         builder.show();
     }
 
-    @Override
     public int setContentId() {
         return R.layout.activity_capture;
     }
 
-    @Override
     public int setScanLayoutId() {
         return R.id.sv_scan;
-    }
-
-    @Override
-    protected void onGetResult(String content) {
-
     }
 
     /**
@@ -228,4 +200,3 @@ public class DefaultCaptureActivity extends AbsCaptureActivity implements Surfac
     }
 
 }
-
