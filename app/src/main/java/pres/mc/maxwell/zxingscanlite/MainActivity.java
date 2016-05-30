@@ -23,39 +23,23 @@ public class MainActivity extends Activity {
         customBtn = (Button) findViewById(R.id.btn_custom);
         contentText = (TextView) findViewById(R.id.tv_content);
 
-        //默认界面
+        //Fragment
         defaultBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-//                QRCodeScaner.scanBuilder(MainActivity.this)
-//                        //.useExistConfig(true)//继承上次的配置，默认为false
-//                        .resultListener(new QRCodeScaner.onGetResultContentListener() {
-//                            @Override
-//                            public void onGetResultContent(AbsCaptureActivity captureActivity, String result) {
-//                                contentText.setText(result);
-//                                captureActivity.finish();
-//                            }
-//                        })
-//                        .scan();
+                startActivity(new Intent(MainActivity.this,TestFragmentActivity.class));
 
             }
         });
 
-        //自定义
+        //Activity
         customBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
                 startActivity(new Intent(MainActivity.this,CaptureActivity.class));
-
-//                QRCodeScaner.configBuilder()
-//                        .autoFocusInterval(1500L)//自动对焦间隔毫秒，默认1000L
-//                        .setCaptureClass(CaptureActivity.class)//不设置则使用默认界面
-//                        .scanArea(new Rect(0, 230, 720, 950))//这个是扫描区域，不是Overlay区域
-//                        .buildScanAfterConfig(MainActivity.this)
-//                        .scan();//回调写在自定义的Actiivty中的onGetResult
 
             }
         });
